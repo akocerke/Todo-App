@@ -1,0 +1,24 @@
+/* globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-geist-sans: 'Geist Sans', sans-serif;
+  --font-geist-mono: 'Geist Mono', monospace;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-geist-sans);
+}
+
+/* Fixierte Navbar am oberen Rand */
+nav {
+  position: absolute; /* Stays at the top while scrolling */
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: BG with opacity */
+}
+
