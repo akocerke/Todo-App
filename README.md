@@ -2,7 +2,9 @@
 
 Eine einfache To-Do-Listen-App, die es Benutzern ermöglicht, ihre Aufgaben zu verwalten. Die App unterstützt Benutzerregistrierung, Anmeldung und verwendet JWT (JSON Web Tokens) für die Authentifizierung. Entwickelt mit Next.js, Tailwind CSS und einer MySQL-Datenbank.
 
-## Features
+<div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px;">
+        <img src="app.png" alt="app-image" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
+    </div>
 
 - **Benutzerregistrierung und -anmeldung:** Benutzer können Konten erstellen und sich anmelden.
 - **Aufgaben verwalten:** Aufgaben können hinzugefügt, gelöscht und aktualisiert werden.
@@ -26,14 +28,17 @@ Die Übersicht bietet eine Zusammenfassung wichtiger Informationen, damit der Be
 **Inhalte für die Übersicht:**
 
 - **Statistiken:**
+
   - Anzahl der aktiven Aufgaben (z. B. "5 offene Aufgaben").
   - Fortschritt in Prozent für abgeschlossene Aufgaben oder Projekte.
   - Letzte Aktivität (z. B. "Du hast zuletzt am 3. November 2 Aufgaben abgeschlossen").
 
 - **Widgets:**
+
   - Schnelle Links oder Buttons zu häufig genutzten Funktionen, wie "Neue Aufgabe hinzufügen".
 
 - **Diagramme:**
+
   - Grafische Darstellungen von Daten (z. B. Balkendiagramme für wöchentliche oder monatliche Fortschritte).
 
 - **To-Do-Liste:**
@@ -46,12 +51,15 @@ In der Aufgabenansicht können Benutzer ihre Aufgaben verwalten. Hier kannst du 
 **Inhalte für die Aufgaben:**
 
 - **Aufgabenliste:**
+
   - Eine vollständige Liste aller Aufgaben mit Status (offen, in Bearbeitung, abgeschlossen).
 
 - **Such- und Filterfunktionen:**
+
   - Ermögliche den Benutzern, Aufgaben nach Fälligkeitsdatum zu filtern.
 
 - **Aufgabenerstellung:**
+
   - Ein Formular zur Erstellung neuer Aufgaben erstellen, das die folgenden Felder umfasst:
 
     - **Titel**: Ein Textfeld für den Titel der Aufgabe.
@@ -68,6 +76,7 @@ In den Einstellungen können Benutzer ihre Kontoinformationen und Präferenzen a
 **Inhalte für die Einstellungen:**
 
 - **Benutzerdaten:**
+
   - Anzeige und Bearbeitung von Benutzerdaten wie Benutzername und E-Mail-Adresse.
 
 - **Passwortänderung:**
@@ -76,6 +85,7 @@ In den Einstellungen können Benutzer ihre Kontoinformationen und Präferenzen a
 ## Datenbankschema
 
 ### 1. Datenbank erstellen und nutzen
+
 ```sql
 -- DB löschen, falls notwendig
 -- DROP DATABASE todo_app;
@@ -88,6 +98,7 @@ USE todo_app;
 ```
 
 ### 2. Tabelle für Benutzer (`users`)
+
 ```sql
 -- Tabelle für Benutzer erstellen, falls sie nicht existiert
 CREATE TABLE IF NOT EXISTS users (
@@ -100,6 +111,7 @@ CREATE TABLE IF NOT EXISTS users (
 ```
 
 ### 3. Tabelle für To-Do-Aufgaben (`todos`)
+
 ```sql
 -- Tabelle für To-Do-Aufgaben erstellen, falls sie nicht existiert
 CREATE TABLE IF NOT EXISTS todos (
@@ -116,6 +128,7 @@ CREATE TABLE IF NOT EXISTS todos (
 ```
 
 ### 4. Dummy-Daten für die Tabelle `users` einfügen
+
 ```sql
 -- Dummy-Daten für die Tabelle users einfügen
 INSERT INTO users (username, email, password, created_at) VALUES
@@ -125,6 +138,7 @@ INSERT INTO users (username, email, password, created_at) VALUES
 ```
 
 ### 5. Dummy-Daten für die Tabelle `todos` einfügen
+
 ```sql
 -- Dummy-Daten für die Tabelle todos einfügen
 INSERT INTO todos (user_id, title, description, status, due_date, created_at, updated_at) VALUES
@@ -137,6 +151,7 @@ INSERT INTO todos (user_id, title, description, status, due_date, created_at, up
 ```
 
 ### 6. Daten aus den Tabellen abfragen
+
 ```sql
 -- Abfrage aller Benutzer
 SELECT * FROM users;
@@ -150,36 +165,39 @@ SELECT * FROM todos;
 Das Entity-Relationship-Diagramm (ER-Diagramm) stellt die Struktur der Datenbank visuell dar und zeigt die verschiedenen Entitäten (Tabellen) sowie deren Beziehungen zueinander auf. In unserer To-Do-Listen-App umfasst das ER-Diagramm die folgenden Hauptkomponenten:
 
 1. **Entitäten**:
+
    - **users**: Diese Tabelle repräsentiert die Benutzer der App. Sie enthält relevante Informationen wie die Benutzer-ID, Benutzernamen, E-Mail-Adressen und gehashte Passwörter. Jeder Benutzer hat eine eindeutige Identität, die durch die `id`-Spalte definiert wird.
    - **todos**: Diese Tabelle enthält die Aufgaben der Benutzer. Jede Aufgabe ist mit einem spezifischen Benutzer verknüpft (durch die `user_id`) und enthält Informationen wie den Titel, die Beschreibung, den Status der Aufgabe (offen, in Bearbeitung, abgeschlossen), das Fälligkeitsdatum sowie Zeitstempel für die Erstellung und letzte Aktualisierung.
 
 2. **Beziehungen**:
+
    - Die Beziehung zwischen der `users`-Tabelle und der `todos`-Tabelle ist eine **1:n-Beziehung** (eins zu viele). Dies bedeutet, dass ein Benutzer mehrere Aufgaben haben kann, während jede Aufgabe genau einem Benutzer zugeordnet ist. Die `user_id`-Spalte in der `todos`-Tabelle fungiert als Fremdschlüssel und verweist auf die `id`-Spalte in der `users`-Tabelle. Dies gewährleistet die referenzielle Integrität der Daten und ermöglicht es, Aufgaben zu einem spezifischen Benutzer zuzuordnen.
 
 3. **Diagramm**:
+
    - Das ER-Diagramm visualisiert diese Entitäten und ihre Beziehungen, was eine klare Übersicht über die Datenbankstruktur bietet. Es zeigt die Attribute jeder Entität und illustriert, wie die Entitäten miteinander verbunden sind.
 
-
-
    - <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px;">
-        <img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
-    </div>
-
+         <img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
+     </div>
 
 ## Weiterführende Implementierung
+
 In diesem Abschnitt werden optionale Funktionen und Verbesserungen vorgestellt, die die Funktionalität und Benutzererfahrung der To-Do-Listen-App erweitern können. Diese Features können je nach den Anforderungen und Wünschen der Benutzer hinzugefügt werden:
 
-- **Benachrichtigungen:** 
+- **Benachrichtigungen:**
   - E-Mail-Benachrichtigungen für anstehende Fälligkeitstermine oder Erinnerungen.
-  
 - **Tags oder Kategorien für Aufgaben:**
+
   - Ermögliche das Kategorisieren von Aufgaben, um die Organisation zu verbessern.
 
-- **Dark Mode:** 
+- **Dark Mode:**
+
   - Implementiere einen Dark Mode für die App.
 
-- **API-Schutz:** 
+- **API-Schutz:**
+
   - Stelle sicher, dass deine API-Routen gesichert sind, damit nur authentifizierte Benutzer Zugriff auf die Ressourcen haben.
 
-- **Optimierung der Benutzeroberfläche:** 
+- **Optimierung der Benutzeroberfläche:**
   - Füge Animationen und Übergänge hinzu, um die Benutzererfahrung zu verbessern.
