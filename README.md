@@ -161,14 +161,13 @@ Das Entity-Relationship-Diagramm (ER-Diagramm) stellt die Struktur der Datenbank
 
 
 
-<div style="display: flex; justify-content: center; margin-top: 20px;">
-    <img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
-</div>
+   - <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px;">
+        <img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
+    </div>
 
 
 ## Weiterführende Implementierung
-
-Hier sind einige zusätzliche Funktionen und Überlegungen, die du in Betracht ziehen könntest:
+In diesem Abschnitt werden optionale Funktionen und Verbesserungen vorgestellt, die die Funktionalität und Benutzererfahrung der To-Do-Listen-App erweitern können. Diese Features können je nach den Anforderungen und Wünschen der Benutzer hinzugefügt werden:
 
 - **Benachrichtigungen:** 
   - E-Mail-Benachrichtigungen für anstehende Fälligkeitstermine oder Erinnerungen.
