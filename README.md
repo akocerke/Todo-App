@@ -161,7 +161,10 @@ Das Entity-Relationship-Diagramm (ER-Diagramm) stellt die Struktur der Datenbank
 
 
 
-<img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; margin-top: 20px; margin-bottom: 20px; border-radius: 10px;">
+<div style="display: flex; justify-content: center; margin-top: 20px;">
+    <img src="ToDo-App-ER-Diagram.png" alt="ER-Diagram" style="max-width: 100%; height: auto; border-radius: 10px; border: 2px solid #000;">
+</div>
+
 
 ## Weiterführende Implementierung
 
