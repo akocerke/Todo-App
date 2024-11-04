@@ -3,12 +3,30 @@ import Link from "next/link";
 import { useState } from "react";
 import { CiLogin, CiHome, CiLogout } from "react-icons/ci";
 import { AiOutlineUserAdd } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Wähle eine Hintergrundklasse basierend auf dem aktuellen Pfad
+  const navbarBackgroundClass = (() => {
+    switch (pathname) {
+      case "/":
+        return "bg-gradient-to-r from-blue-400 to-purple-600"; // Startseite
+      case "/login":
+        return "bg-gradient-to-r from-green-400 to-blue-500"; // Login-Seite
+      case "/register":
+        return "bg-gradient-to-r from-purple-500 to-pink-500"; // Registrierungsseite
+      case "/logout":
+        return "bg-gradient-to-r from-green-500 to-teal-300"; // Logout-Seite
+      default:
+        return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
+    }
+  })();
 
   return (
-    <nav className="bg-black bg-opacity-50 p-4 shadow-lg text-white sm:p-6">
+    <nav className={`${navbarBackgroundClass} fixed top-0 left-0 w-full p-4 shadow-lg text-white sm:p-6`}>
       <div className="container mx-auto flex justify-between items-center">
         <Link className="text-2xl font-bold" href={"/"}>ToDo APP</Link>
 
@@ -47,7 +65,6 @@ export const Navbar = () => {
         <div className="md:hidden flex items-center">
           <button onClick={() => setIsOpen(!isOpen)} className="p-2">
             {isOpen ? (
-              // "X" Icon für das Schließen
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-gray-200"
@@ -63,7 +80,6 @@ export const Navbar = () => {
                 />
               </svg>
             ) : (
-              // Hamburger-Menü Icon für das Öffnen
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-gray-200"
@@ -85,7 +101,7 @@ export const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-2 text-left">
+        <div className={`${navbarBackgroundClass} md:hidden mt-4 space-y-2 text-left`}>
           <Link
             href="/"
             className="flex items-center mx-2 hover:text-gray-300"
