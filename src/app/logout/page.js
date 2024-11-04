@@ -7,7 +7,7 @@ export default function LoginPage() {
     AOS.init({ duration: 1000 });
   }, []);
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-500 to-teal-300 p-6">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-500 to-teal-800 p-6">
       <div
         className="max-w-md w-full bg-white shadow-lg rounded-lg p-6"
         data-aos="fade-up"

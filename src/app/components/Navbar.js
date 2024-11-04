@@ -19,7 +19,7 @@ export const Navbar = () => {
       case "/register":
         return "bg-gradient-to-r from-purple-500 to-pink-500"; // Registrierungsseite
       case "/logout":
-        return "bg-gradient-to-r from-green-500 to-teal-300"; // Logout-Seite
+        return "bg-gradient-to-r from-green-500 to-teal-800"; // Logout-Seite
       default:
         return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
     }
