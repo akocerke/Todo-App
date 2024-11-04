@@ -1,5 +1,11 @@
 # To-Do Listen App
 
+
+<div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px;">
+        <img src="app.png" alt="app-image" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
+    </div>
+
+    
 Eine einfache To-Do-Listen-App, die es Benutzern ermöglicht, ihre Aufgaben zu verwalten. Die App unterstützt Benutzerregistrierung, Anmeldung und verwendet JWT (JSON Web Tokens) für die Authentifizierung. Entwickelt mit Next.js, Tailwind CSS und einer MySQL-Datenbank.
 
 - **Benutzerregistrierung und -anmeldung:** Benutzer können Konten erstellen und sich anmelden.
@@ -8,12 +14,10 @@ Eine einfache To-Do-Listen-App, die es Benutzern ermöglicht, ihre Aufgaben zu v
 - **Responsives Design:** Benutzeroberfläche, die auf verschiedenen Geräten gut aussieht, dank Tailwind CSS.
 
 
-<div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 40px;">
-        <img src="app.png" alt="app-image" style="max-width: 100%; height: auto; border-radius: 20px; border: 2px solid #000;">
-    </div>
 
 
-    
+
+
 
 ## Technologien
 
