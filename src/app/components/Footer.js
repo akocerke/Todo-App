@@ -1,11 +1,32 @@
 "use client";
 import Link from "next/link";
 import { AiFillFacebook, AiFillTwitterCircle, AiFillInstagram } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
 export const Footer = () => {
+  const pathname = usePathname();
+
+  // Wähle eine Hintergrundklasse basierend auf dem aktuellen Pfad
+  const footerBackgroundClass = (() => {
+    switch (pathname) {
+      case "/":
+        return "bg-gradient-to-r from-blue-400 to-purple-600"; // Startseite
+      case "/login":
+        return "bg-gradient-to-r from-green-400 to-blue-500"; // Login-Seite
+      case "/register":
+        return "bg-gradient-to-r from-purple-500 to-pink-500"; // Registrierungsseite
+      case "/logout":
+        return "bg-gradient-to-r from-green-500 to-teal-300"; // Logout-Seite
+      default:
+        return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
+    }
+  })();
+
   return (
-    <footer className="bg-opacity-50 bg-gradient-to-r from-blue-400 to-purple-600 p-6 text-white">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
+    <footer className={`${footerBackgroundClass} p-6 text-white relative`}>
+      {/* Overlay für die Standardfarbe */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start relative z-10">
         <div className="mb-6 md:mb-0 md:w-1/3">
           <h3 className="text-lg font-bold">Kontakt</h3>
           <p className="text-sm">E-Mail: support@todoapp.com</p>
@@ -38,7 +59,7 @@ export const Footer = () => {
         </div>
       </div>
       
-      <div className="mt-6 text-center text-sm">
+      <div className="mt-6 text-center text-sm relative z-10">
         <p>© 2024 ToDo APP. Alle Rechte vorbehalten.</p>
       </div>
     </footer>
