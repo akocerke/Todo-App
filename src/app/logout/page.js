@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-export default function LoginPage() {
+export default function LogoutPage() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -12,7 +12,9 @@ export default function LoginPage() {
         className="max-w-md w-full bg-white shadow-lg rounded-lg p-6"
         data-aos="fade-up"
       >
-        <h1 className="text-4xl font-bold text-center">Logout</h1>
+        <h1 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-teal-800">
+          Logout
+        </h1>
       </div>
     </div>
   );

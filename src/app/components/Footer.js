@@ -17,6 +17,8 @@ export const Footer = () => {
         return "bg-gradient-to-r from-purple-500 to-pink-500"; // Registrierungsseite
       case "/logout":
         return "bg-gradient-to-r from-green-500 to-teal-800"; // Logout-Seite
+        case "/dashboard":
+          return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Seite
       default:
         return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
     }

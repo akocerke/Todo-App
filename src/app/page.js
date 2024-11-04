@@ -18,12 +18,12 @@ export default function Home() {
         </p>
         <a
           href="/login"
-          className="bg-purple-700 text-white hover:bg-purple-800 hover:text-white py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          className="bg-purple-700 text-white hover:bg-purple-800 hover:text-white font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300"
         >
           Jetzt loslegen
         </a>
       </div>
-
+      
       {/* Funktionen Abschnitt */}
       <div
         className="mt-20 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 p-5"
@@ -31,7 +31,7 @@ export default function Home() {
       >
         <div className="bg-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
           <h2 className="uppercase font-semibold mb-4 text-gray-600">
-          Benutzeroberfläche
+            Benutzeroberfläche
           </h2>
           <p className="text-gray-600">
             Eine benutzerfreundliche Oberfläche, die es dir ermöglicht, deine
@@ -39,19 +39,22 @@ export default function Home() {
           </p>
         </div>
         <div className="bg-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
-  <h2 className="uppercase font-semibold mb-4 text-gray-600">Datenverfügbarkeit</h2>
-  <p className="text-gray-600">
-    Greife auf deine Aufgaben von überall zu und verwalte sie einfach, solange du mit dem Internet verbunden bist.
-  </p>
-</div>
+          <h2 className="uppercase font-semibold mb-4 text-gray-600">
+            Datenverfügbarkeit
+          </h2>
+          <p className="text-gray-600">
+            Greife auf deine Aufgaben von überall zu und verwalte sie einfach,
+            solange du mit dem Internet verbunden bist.
+          </p>
+        </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
           <h2 className="uppercase  font-semibold mb-4 text-gray-600">
             Aufgaben verwalten
           </h2>
           <p className="text-gray-600">
-            Füge deine Aufgaben hinzu, aktualisiere sie oder lösche sie, um
-            deine To-Do-Liste effizient zu verwalten.
+            Füge Aufgaben hinzu, aktualisiere sie, markiere sie als erledigt
+            oder lösche sie, um deine To-Do-Liste effizient zu verwalten.
           </p>
         </div>
       </div>

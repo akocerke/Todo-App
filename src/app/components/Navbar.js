@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { CiLogin, CiHome, CiLogout } from "react-icons/ci";
+import { CiLogin, CiHome, CiLogout, CiSettings } from "react-icons/ci";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 
@@ -20,20 +20,37 @@ export const Navbar = () => {
         return "bg-gradient-to-r from-purple-500 to-pink-500"; // Registrierungsseite
       case "/logout":
         return "bg-gradient-to-r from-green-500 to-teal-800"; // Logout-Seite
+      case "/dashboard":
+        return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Seite
+      case "/dashboard/tasks":
+        return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Tasks-Seite
+      case "/dashboard/settings":
+        return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Einstellungen-Seite
       default:
         return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
     }
   })();
 
   return (
-    <nav className={`${navbarBackgroundClass} fixed top-0 left-0 w-full p-4 shadow-lg text-white sm:p-6`}>
+    <nav
+      className={`${navbarBackgroundClass} fixed top-0 left-0 w-full p-4 shadow-lg text-white sm:p-6`}
+    >
       <div className="container mx-auto flex justify-between items-center">
-        <Link className="text-2xl font-bold" href={"/"}>ToDo APP</Link>
+        <Link className="text-2xl font-bold" href={"/"}>
+          ToDo APP
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex flex-grow justify-center">
           <Link href="/" className="flex items-center mx-2 hover:text-gray-300">
             <CiHome className="mr-1 text-gray-200 hover:text-gray-300" /> Home
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center mx-2 hover:text-gray-300"
+          >
+            <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+            Dashboard
           </Link>
         </div>
 
@@ -101,13 +118,23 @@ export const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className={`${navbarBackgroundClass} md:hidden mt-4 space-y-2 text-left`}>
+        <div
+          className={`${navbarBackgroundClass} md:hidden mt-4 space-y-2 text-left`}
+        >
           <Link
             href="/"
             className="flex items-center mx-2 hover:text-gray-300"
             onClick={() => setIsOpen(false)}
           >
             <CiHome className="mr-1 text-gray-200 hover:text-gray-300" /> Home
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center mx-2 hover:text-gray-300"
+            onClick={() => setIsOpen(false)}
+          >
+            <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />
+            Dashboard
           </Link>
           <Link
             href="/login"
