@@ -12,7 +12,7 @@ export default function Imprint() {
     <div className="bg-gradient-to-r from-blue-400 to-purple-600 min-h-screen flex flex-col items-center justify-center text-white p-6">
       {/* Hero-Bereich */}
       <div className="text-center mt-20" data-aos="fade-up">
-        <h1 className="text-6xl font-bold mb-4">Impressum</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4">Impressum</h1>
         <p className="text-lg mb-8">
           Rechtliche Informationen und Angaben gemäß § 5 TMG.
         </p>
