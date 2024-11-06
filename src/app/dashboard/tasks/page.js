@@ -2,7 +2,18 @@
 import { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { IoIosAddCircleOutline, IoIosWarning, IoIosBuild, IoIosCheckmarkCircle, IoIosCreate, IoIosTrash, IoIosEye, IoIosArrowDown, IoIosClose } from "react-icons/io";
+import {
+  IoIosAddCircleOutline,
+  IoIosWarning,
+  IoIosBuild,
+  IoIosCheckmarkCircle,
+  IoIosCreate,
+  IoIosTrash,
+  IoIosEye,
+  IoIosArrowDown,
+  IoIosClose,
+} from "react-icons/io";
+import { TfiReload } from "react-icons/tfi";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([
@@ -12,6 +23,7 @@ export default function TasksPage() {
       description: "This is the description for task 1",
       dueDate: "2024-11-20",
       status: "offen",
+      isImportant: true, // Neue Eigenschaft für wichtige Aufgaben
     },
     {
       id: 2,
@@ -19,6 +31,7 @@ export default function TasksPage() {
       description: "This is the description for task 2",
       dueDate: "2024-11-21",
       status: "in Bearbeitung",
+      isImportant: false,
     },
     {
       id: 3,
@@ -26,10 +39,17 @@ export default function TasksPage() {
       description: "This is the description for task 3",
       dueDate: "2024-11-22",
       status: "abgeschlossen",
+      isImportant: true,
     },
   ]);
   const [filterDate, setFilterDate] = useState("");
-  const [newTask, setNewTask] = useState({ title: "", description: "", dueDate: "" });
+  const [filterImportant, setFilterImportant] = useState(false); // Zustand für den wichtigen Aufgabenfilter
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+    isImportant: false,
+  });
   const [editingTask, setEditingTask] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
@@ -40,18 +60,30 @@ export default function TasksPage() {
   const handleTaskSubmit = (e) => {
     e.preventDefault();
     if (editingTask) {
-      setTasks(tasks.map(task => task.id === editingTask.id ? { ...task, ...newTask } : task));
+      setTasks(
+        tasks.map((task) =>
+          task.id === editingTask.id ? { ...task, ...newTask } : task
+        )
+      );
       setEditingTask(null);
     } else {
-      setTasks([...tasks, { ...newTask, id: tasks.length + 1, status: "offen" }]);
+      setTasks([
+        ...tasks,
+        { ...newTask, id: tasks.length + 1, status: "offen" },
+      ]);
     }
-    setNewTask({ title: "", description: "", dueDate: "" });
+    setNewTask({ title: "", description: "", dueDate: "", isImportant: false });
   };
 
   const handleEditTask = (task) => {
-    setNewTask({ title: task.title, description: task.description, dueDate: task.dueDate });
+    setNewTask({
+      title: task.title,
+      description: task.description,
+      dueDate: task.dueDate,
+      isImportant: task.isImportant,
+    });
     setEditingTask(task);
-  
+
     // Scrollen zum Formular
     const element = document.getElementById("newtask");
     if (element) {
@@ -63,17 +95,22 @@ export default function TasksPage() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  // Filter tasks by due date
+  // Filter tasks by due date and importance
   const filteredTasks = tasks.filter((task) => {
-    if (!filterDate) return true;
-    return task.dueDate === filterDate;
+    if (filterDate && task.dueDate !== filterDate) return false;
+    if (filterImportant && !task.isImportant) return false;
+    return true;
   });
 
   // Group filtered tasks by status
   const tasksByStatus = {
     offen: filteredTasks.filter((task) => task.status === "offen"),
-    inBearbeitung: filteredTasks.filter((task) => task.status === "in Bearbeitung"),
-    abgeschlossen: filteredTasks.filter((task) => task.status === "abgeschlossen"),
+    inBearbeitung: filteredTasks.filter(
+      (task) => task.status === "in Bearbeitung"
+    ),
+    abgeschlossen: filteredTasks.filter(
+      (task) => task.status === "abgeschlossen"
+    ),
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -83,49 +120,86 @@ export default function TasksPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="text-center mb-6" data-aos="fade-up">
-        <h2 className="text-3xl font-semibold text-slate-500 mb-4 uppercase">Aufgaben</h2>
-        <p className="text-gray-600">Verwalte und organisiere deine Aufgaben.</p>
+        <h2 className="text-3xl font-semibold text-slate-500 mb-4 uppercase">
+          Aufgaben
+        </h2>
+        <p className="text-gray-600">
+          Verwalte und organisiere deine Aufgaben.
+        </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6" data-aos="fade-up" id="newtask">
+      <div
+        className="bg-white rounded-lg shadow p-6"
+        data-aos="fade-up"
+        id="newtask"
+      >
         <h3 className="text-xl font-semibold text-slate-500 mb-4">
           {editingTask ? "Aufgabe bearbeiten" : "Neue Aufgabe erstellen"}
         </h3>
         <form onSubmit={handleTaskSubmit}>
           <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-500 mb-2">Titel</label>
+            <label htmlFor="title" className="block text-gray-500 mb-2">
+              Titel
+            </label>
             <input
               id="title"
               type="text"
               className="w-full px-4 py-2 border rounded-md text-gray-500"
               value={newTask.title}
-              onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, title: e.target.value })
+              }
               required
               placeholder="Titel"
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="description" className="block text-gray-500 mb-2">Beschreibung</label>
+            <label htmlFor="description" className="block text-gray-500 mb-2">
+              Beschreibung
+            </label>
             <textarea
               id="description"
               className="w-full px-4 py-2 border rounded-md text-gray-500"
               value={newTask.description}
-              onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, description: e.target.value })
+              }
               required
               placeholder="Beschreibung"
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="dueDate" className="block text-gray-500 mb-2">Fälligkeitsdatum</label>
+            <label htmlFor="dueDate" className="block text-gray-500 mb-2">
+              Fälligkeitsdatum
+            </label>
             <input
               id="dueDate"
               type="date"
               className="w-full px-4 py-2 border rounded-md text-gray-400"
               value={newTask.dueDate}
-              onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+              onChange={(e) =>
+                setNewTask({ ...newTask, dueDate: e.target.value })
+              }
               min={today}
               required
             />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="important"
+              className="flex items-center text-gray-500"
+            >
+              <input
+                type="checkbox"
+                id="important"
+                checked={newTask.isImportant}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, isImportant: e.target.checked })
+                }
+                className="mr-2"
+              />
+              Wichtige Aufgabe
+            </label>
           </div>
           <button
             type="submit"
@@ -137,38 +211,69 @@ export default function TasksPage() {
         </form>
       </div>
 
-      <div className="mb-6 mt-6 bg-white rounded-lg shadow p-6" data-aos="fade-up">
-  <label htmlFor="filterDate" className="mr-2 text-gray-700">Filter nach Fälligkeitsdatum:</label>
-  <input
-    id="filterDate"
-    type="date"
-    className="px-4 py-2 border rounded-md text-gray-400"
-    value={filterDate}
-    onChange={(e) => setFilterDate(e.target.value)}
-  />
-  
-  {/* Filter zurücksetzen Button */}
-  {filterDate && (
-    <button
-      onClick={() => setFilterDate("")}
-      className="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded"
-    >
-      Filter zurücksetzen
-    </button>
-  )}
-</div>
+      <div
+        className="mb-6 mt-6 bg-white rounded-lg shadow p-6"
+        data-aos="fade-up"
+      >
+        <label htmlFor="filterDate" className="mr-2 text-gray-700">
+          Filter nach Fälligkeitsdatum:
+        </label>
+        <input
+          id="filterDate"
+          type="date"
+          className="px-4 py-2 border rounded-md text-gray-400"
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+        />
 
+        {/* Filter für wichtige Aufgaben */}
+        <div className="mt-4 flex items-center">
+          <label htmlFor="filterImportant" className="mr-2 text-gray-700">
+            Nur wichtige Aufgaben:
+          </label>
+          <input
+            type="checkbox"
+            id="filterImportant"
+            checked={filterImportant}
+            onChange={(e) => setFilterImportant(e.target.checked)}
+            className="ml-2"
+          />
+        </div>
+
+        {/* Filter zurücksetzen Button */}
+        {filterDate || filterImportant ? (
+          <button
+            onClick={() => {
+              setFilterDate("");
+              setFilterImportant(false);
+            }}
+            className="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded mt-2 flex items-center gap-2"
+          >
+            <TfiReload />
+            <span>Filter zurücksetzen</span>
+          </button>
+        ) : null}
+      </div>
 
       <div data-aos="fade-up">
         {["offen", "inBearbeitung", "abgeschlossen"].map((status) => (
           <div key={status} className="mb-6">
             <h3 className="text-2xl font-semibold text-slate-500 capitalize mb-4">
-              {status === "offen" ? "Offene Aufgaben" : status === "inBearbeitung" ? "In Bearbeitung" : "Abgeschlossene Aufgaben"}
+              {status === "offen"
+                ? "Offene Aufgaben"
+                : status === "inBearbeitung"
+                ? "In Bearbeitung"
+                : "Abgeschlossene Aufgaben"}
             </h3>
             <div className="space-y-4">
               {tasksByStatus[status].map((task) => (
-                <div key={task.id} className="bg-white rounded-lg shadow p-6">
-                  <h3 className="text-xl font-semibold text-slate-500">{task.title}</h3>
+                <div key={task.id} className="bg-white p-4 rounded shadow-md">
+                  <h3 className="text-xl font-semibold text-slate-500">
+                    {task.title}{" "}
+                    {task.isImportant && (
+                      <span className="text-yellow-500">⭐</span>
+                    )}
+                  </h3>
                   <p className="text-gray-600 mt-2">{task.description}</p>
                   <p className="text-gray-500 mt-2">{task.dueDate}</p>
 
@@ -208,7 +313,9 @@ export default function TasksPage() {
                         <IoIosTrash size={20} /> Löschen
                       </button>
                       <button
-                        onClick={() => alert(`Details der Aufgabe: ${task.title}`)}
+                        onClick={() =>
+                          alert(`Details der Aufgabe: ${task.title}`)
+                        }
                         className="flex items-center gap-2 text-gray-500 hover:text-gray-700 w-full text-left py-2"
                       >
                         <IoIosEye size={20} /> Details
@@ -217,7 +324,11 @@ export default function TasksPage() {
 
                     <div className="sm:hidden w-full flex justify-between items-center">
                       <button
-                        onClick={() => setDropdownOpen(dropdownOpen === task.id ? null : task.id)}
+                        onClick={() =>
+                          setDropdownOpen(
+                            dropdownOpen === task.id ? null : task.id
+                          )
+                        }
                         className="text-gray-500 hover:text-gray-700 flex items-center gap-2"
                       >
                         <IoIosArrowDown size={20} />
@@ -244,7 +355,9 @@ export default function TasksPage() {
                             <IoIosTrash size={20} /> Löschen
                           </button>
                           <button
-                            onClick={() => alert(`Details der Aufgabe: ${task.title}`)}
+                            onClick={() =>
+                              alert(`Details der Aufgabe: ${task.title}`)
+                            }
                             className="flex items-center gap-2 text-gray-500 hover:text-gray-700 w-full text-left py-2"
                           >
                             <IoIosEye size={20} /> Details
