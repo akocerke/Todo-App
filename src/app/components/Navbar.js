@@ -26,6 +26,13 @@ export const Navbar = () => {
         return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Tasks-Seite
       case "/dashboard/settings":
         return "bg-gradient-to-r from-orange-700 to-lime-500"; // Dashboard-Einstellungen-Seite
+      case "/terms":
+        return "bg-gradient-to-r from-yellow-400 to-red-600"; // Nutzerbedingungen-Seite
+      case "/privacypolicy":
+        return "bg-gradient-to-r from-purple-600 to-blue-400"; // Datenschutz-Seite
+      case "/imprint":
+        return "bg-gradient-to-r from-blue-400 to-purple-600"; // Impressum-Seite
+
       default:
         return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
     }

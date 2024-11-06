@@ -21,16 +21,16 @@ export default function DashboardLayout({ children }) {
       {/* Flexbox für Sidebar und Hauptinhalt */}
       <div className="flex flex-col lg:flex-row w-full max-w-6xl">
         <aside className="w-full lg:w-64 bg-gray-100 shadow-md rounded-lg p-4 mb-4 lg:mb-0 lg:mr-6" data-aos="fade-right">
-          <h2 className="font-semibold text-lg text-gray-700 mb-4">Navigation</h2>
+          <h2 className="font-semibold text-xl text-gray-700 mb-4">Navigation</h2>
           <ul className="space-y-2">
             <li>
-              <Link href="/dashboard" className="text-orange-700 hover:text-orange-400">Übersicht</Link>
+              <Link href="/dashboard" className="text-purple-800 hover:text-purple-400 text-lg">Übersicht</Link>
             </li>
             <li>
-              <Link href="/dashboard/tasks" className="text-orange-700 hover:text-orange-400">Aufgaben</Link>
+              <Link href="/dashboard/tasks" className="text-purple-800 hover:text-purple-400 text-lg ">Aufgaben</Link>
             </li>
             <li>
-              <Link href="/dashboard/settings" className="text-orange-700 hover:text-orange-400">Einstellungen</Link>
+              <Link href="/dashboard/settings" className="text-purple-800 hover:text-purple-400 text-lg ">Einstellungen</Link>
             </li>
           </ul>
         </aside>
