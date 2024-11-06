@@ -60,7 +60,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center space-y-4">
           {/* Titel für den Bereich */}
           <h3 className="text-xl font-semibold text-slate-500 mb-2">
-            Neue Aufgabe
+            Aufgabe hinzufügen
           </h3>
 
           {/* Button zum Hinzufügen einer Aufgabe */}
