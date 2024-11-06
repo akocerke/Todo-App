@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
     <div className="bg-gradient-to-r from-purple-600 to-blue-400 min-h-screen flex flex-col items-center justify-center text-white p-6">
       {/* Hero-Bereich */}
       <div className="text-center mt-20" data-aos="fade-up">
-        <h1 className="text-6xl font-bold mb-4">Datenschutzerklärung</h1>
+        <h1 className="text-3xl font-bold mb-4">Datenschutzerklärung</h1>
         <p className="text-lg mb-8">
           Ihr Datenschutz ist uns wichtig. Hier erfahren Sie, wie wir Ihre
           Daten sammeln, nutzen und schützen.

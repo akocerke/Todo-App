@@ -12,8 +12,8 @@ export default function TermsOfUse() {
     <div className="bg-gradient-to-r from-yellow-400 to-red-600 min-h-screen flex flex-col items-center justify-center text-white p-6">
       {/* Hero-Bereich */}
       <div className="text-center mt-20" data-aos="fade-up">
-        <h1 className="text-6xl font-bold mb-4">Nutzungsbedingungen</h1>
-        <p className="text-lg mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4">Nutzungsbedingungen</h1>
+        <p className="text-lg sm:text-xl mb-8">
           Hier erfahren Sie die Bedingungen, unter denen Sie unsere Dienste und
           Inhalte nutzen dürfen.
         </p>
