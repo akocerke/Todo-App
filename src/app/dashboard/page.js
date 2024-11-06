@@ -60,12 +60,12 @@ export default function DashboardPage() {
         <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center space-y-4">
           {/* Titel für den Bereich */}
           <h3 className="text-xl font-semibold text-slate-500 mb-2">
-            Neue Aufgabe
+            Aufgabe hinzufügen
           </h3>
 
           {/* Button zum Hinzufügen einer Aufgabe */}
           <a
-            href="*"
+            href="/dashboard/tasks/#newtask"
             className="bg-purple-700 text-white hover:bg-purple-800 font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
           >
             <IoIosAddCircleOutline size={24} />
