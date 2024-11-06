@@ -75,7 +75,7 @@ In der Aufgabenansicht können Benutzer ihre Aufgaben verwalten. Hier kannst du 
     - **Fälligkeitsdatum**: Ein Datumsfeld, um das Fälligkeitsdatum auszuwählen.
 
 - **Aufgabendetails:**
-  - Möglichkeit, Aufgaben zu bearbeiten, Details anzusehen.
+  - Möglichkeit, Aufgaben zu bearbeiten, Details anzusehen und Aufgaben zu löschen.
 
 ### 3. Einstellungen
 
