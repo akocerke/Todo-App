@@ -128,6 +128,7 @@ CREATE TABLE IF NOT EXISTS todos (
     title VARCHAR(100) NOT NULL,
     description TEXT,
     status ENUM('offen', 'in Bearbeitung', 'abgeschlossen') DEFAULT 'offen',
+    is_important BOOLEAN DEFAULT 0, -- Neue Spalte für "wichtige" Aufgaben
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     due_date DATETIME,
@@ -149,18 +150,21 @@ INSERT INTO users (username, email, password, created_at) VALUES
 
 ```sql
 -- Dummy-Daten für die Tabelle todos einfügen
-INSERT INTO todos (user_id, title, description, status, due_date, created_at, updated_at) VALUES
-(1, 'Einkaufen gehen', 'Milch, Brot, Eier und Obst kaufen.', 'offen', '2024-11-10 18:00:00', NOW(), NOW()),
-(1, 'Hausaufgaben machen', 'Mathe und Englisch Hausaufgaben fertigstellen.', 'in Bearbeitung', '2024-11-05 17:00:00', NOW(), NOW()),
-(2, 'Fitnessstudio', 'Im Fitnessstudio trainieren.', 'offen', '2024-11-07 19:00:00', NOW(), NOW()),
-(2, 'Projekte abschließen', 'Abschlussbericht für das Projekt fertigstellen.', 'abgeschlossen', '2024-11-03 15:00:00', NOW(), NOW()),
-(3, 'Arzttermin', 'Zur Arztpraxis gehen für die jährliche Untersuchung.', 'offen', '2024-11-12 09:00:00', NOW(), NOW()),
-(3, 'Küche putzen', 'Die Küche gründlich reinigen.', 'offen', '2024-11-09 12:00:00', NOW(), NOW());
+INSERT INTO todos (user_id, title, description, status, due_date, is_important, created_at, updated_at) VALUES
+(1, 'Einkaufen gehen', 'Milch, Brot, Eier und Obst kaufen.', 'offen', '2024-11-10 18:00:00', 0, NOW(), NOW()),
+(1, 'Hausaufgaben machen', 'Mathe und Englisch Hausaufgaben fertigstellen.', 'in Bearbeitung', '2024-11-05 17:00:00', 1, NOW(), NOW()), -- markiert als wichtig
+(2, 'Fitnessstudio', 'Im Fitnessstudio trainieren.', 'offen', '2024-11-07 19:00:00', 1, NOW(), NOW()), -- markiert als wichtig
+(2, 'Projekte abschließen', 'Abschlussbericht für das Projekt fertigstellen.', 'abgeschlossen', '2024-11-03 15:00:00', 0, NOW(), NOW()),
+(3, 'Arzttermin', 'Zur Arztpraxis gehen für die jährliche Untersuchung.', 'offen', '2024-11-12 09:00:00', 1, NOW(), NOW()), -- markiert als wichtig
+(3, 'Küche putzen', 'Die Küche gründlich reinigen.', 'offen', '2024-11-09 12:00:00', 0, NOW(), NOW());
 ```
 
 ### 6. Daten aus den Tabellen abfragen
 
 ```sql
+-- Abfrage alle wichtigen Aufgaben
+SELECT * FROM todos WHERE is_important = 1;
+
 -- Abfrage aller Benutzer
 SELECT * FROM users;
 
