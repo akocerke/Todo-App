@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
           {/* Button zum Hinzufügen einer Aufgabe */}
           <a
-            href="*"
+            href="/dashboard/tasks/#newtask"
             className="bg-purple-700 text-white hover:bg-purple-800 font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
           >
             <IoIosAddCircleOutline size={24} />

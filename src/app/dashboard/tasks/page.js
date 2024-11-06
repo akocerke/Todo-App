@@ -113,13 +113,17 @@ export default function TasksPage() {
       </div>
 
       {/* Formular zur Erstellung neuer Aufgaben */}
-      <div className="bg-white rounded-lg shadow p-6" data-aos="fade-up">
+      <div
+        className="bg-white rounded-lg shadow p-6"
+        data-aos="fade-up"
+        id="newtask"
+      >
         <h3 className="text-xl font-semibold text-slate-500 mb-4">
           Neue Aufgabe erstellen
         </h3>
         <form onSubmit={handleTaskSubmit}>
           <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 mb-2">
+            <label htmlFor="title" className="block text-gray-500 mb-2">
               Titel
             </label>
             <input
@@ -131,10 +135,11 @@ export default function TasksPage() {
                 setNewTask({ ...newTask, title: e.target.value })
               }
               required
+              placeholder="Titel"
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="description" className="block text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-gray-500 mb-2">
               Beschreibung
             </label>
             <textarea
@@ -145,22 +150,24 @@ export default function TasksPage() {
                 setNewTask({ ...newTask, description: e.target.value })
               }
               required
+              placeholder="Beschreibung"
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="dueDate" className="block text-gray-700 mb-2">
+            <label htmlFor="dueDate" className="block text-gray-500 mb-2">
               Fälligkeitsdatum
             </label>
             <input
               id="dueDate"
               type="date"
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-full px-4 py-2 border rounded-md text-gray-400"
               value={newTask.dueDate}
               onChange={(e) =>
                 setNewTask({ ...newTask, dueDate: e.target.value })
               }
               min={today} // Nur zukünftige Daten ab dem aktuellen Tag möglich
               required
+              
             />
           </div>
           <button
