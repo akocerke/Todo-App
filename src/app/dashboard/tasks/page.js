@@ -1,10 +1,177 @@
+"use client";
+import { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { IoIosAddCircleOutline } from "react-icons/io";
+
+// Beispiel-Daten für Aufgaben
+const initialTasks = [
+  {
+    id: 1,
+    title: "Projektmeeting vorbereiten",
+    description: "Erstelle eine Präsentation für das Meeting.",
+    dueDate: "2024-11-10",
+    status: "offen",
+  },
+  {
+    id: 2,
+    title: "Code-Review durchführen",
+    description: "Review den neuesten Pull Request.",
+    dueDate: "2024-11-12",
+    status: "in Bearbeitung",
+  },
+  {
+    id: 3,
+    title: "Marketing-Kampagne starten",
+    description: "Die neue Kampagne in die sozialen Netzwerke posten.",
+    dueDate: "2024-11-15",
+    status: "abgeschlossen",
+  },
+];
+
 export default function TasksPage() {
-    return (
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Aufgaben</h2>
-        <p className="text-gray-600">Hier siehst du deine Aufgaben.</p>
-        {/* Aufgaben-Logik kann später hinzugefügt werden */}
+  const [tasks, setTasks] = useState(initialTasks);
+  const [filterDate, setFilterDate] = useState("");
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+  });
+
+  // Initialisiere AOS
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
+
+  // Funktion zum Erstellen einer neuen Aufgabe
+  const handleTaskSubmit = (e) => {
+    e.preventDefault();
+    setTasks([...tasks, { ...newTask, id: tasks.length + 1, status: "offen" }]);
+    setNewTask({ title: "", description: "", dueDate: "" }); // Formular zurücksetzen
+  };
+
+  // Filtere Aufgaben nach Fälligkeitsdatum
+  const filteredTasks = tasks.filter((task) => {
+    if (!filterDate) return true;
+    return task.dueDate === filterDate;
+  });
+
+  // Aktuelles Datum im Format YYYY-MM-DD für das min-Attribut
+  const today = new Date().toISOString().split("T")[0];
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Header */}
+      <div className="text-center mb-6" data-aos="fade-up">
+        <h2 className="text-3xl font-semibold text-slate-500 mb-4 uppercase">
+          Aufgaben
+        </h2>
+        <p className="text-gray-600">
+          Verwalte und organisiere deine Aufgaben.
+        </p>
       </div>
-    );
-  }
-  
+
+      {/* Filter nach Fälligkeitsdatum */}
+      <div className="mb-6" data-aos="fade-up">
+        <label htmlFor="filterDate" className="mr-2 text-gray-700">
+          Filter nach Fälligkeitsdatum:
+        </label>
+        <input
+          id="filterDate"
+          type="date"
+          className="px-4 py-2 border rounded-md"
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+        />
+      </div>
+
+      {/* Aufgabenliste */}
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
+        data-aos="fade-up"
+      >
+        {filteredTasks.map((task) => (
+          <div key={task.id} className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-semibold text-slate-500">
+              {task.title}
+            </h3>
+            <p className="text-gray-600">{task.description}</p>
+            <p className="text-gray-500">Fälligkeitsdatum: {task.dueDate}</p>
+            <p
+              className={`mt-2 p-1 text-white rounded text-center ${
+                task.status === "offen"
+                  ? "bg-yellow-500"
+                  : task.status === "in Bearbeitung"
+                  ? "bg-blue-500"
+                  : "bg-green-500"
+              }`}
+            >
+              {task.status}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Formular zur Erstellung neuer Aufgaben */}
+      <div className="bg-white rounded-lg shadow p-6" data-aos="fade-up">
+        <h3 className="text-xl font-semibold text-slate-500 mb-4">
+          Neue Aufgabe erstellen
+        </h3>
+        <form onSubmit={handleTaskSubmit}>
+          <div className="mb-4">
+            <label htmlFor="title" className="block text-gray-700 mb-2">
+              Titel
+            </label>
+            <input
+              id="title"
+              type="text"
+              className="w-full px-4 py-2 border rounded-md"
+              value={newTask.title}
+              onChange={(e) =>
+                setNewTask({ ...newTask, title: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="description" className="block text-gray-700 mb-2">
+              Beschreibung
+            </label>
+            <textarea
+              id="description"
+              className="w-full px-4 py-2 border rounded-md"
+              value={newTask.description}
+              onChange={(e) =>
+                setNewTask({ ...newTask, description: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="dueDate" className="block text-gray-700 mb-2">
+              Fälligkeitsdatum
+            </label>
+            <input
+              id="dueDate"
+              type="date"
+              className="w-full px-4 py-2 border rounded-md"
+              value={newTask.dueDate}
+              onChange={(e) =>
+                setNewTask({ ...newTask, dueDate: e.target.value })
+              }
+              min={today} // Nur zukünftige Daten ab dem aktuellen Tag möglich
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-purple-700 text-white hover:bg-purple-800 font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <IoIosAddCircleOutline size={24} />
+            <span>Aufgabe hinzufügen</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
