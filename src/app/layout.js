@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { AuthProvider } from "@/context/AuthContext"; // Hier den AuthProvider importieren
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,15 +22,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
   return (
     <html lang="de" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <Navbar />
-        <main>
-          {children}
-        </main>
-        <Footer/>
+        <AuthProvider> {/* AuthProvider hier einfügen */}
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

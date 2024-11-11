@@ -4,10 +4,12 @@ import { useState } from "react";
 import { CiLogin, CiHome, CiLogout, CiSettings } from "react-icons/ci";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext"; // Importiere useAuth, um den Auth-Status zu nutzen
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { isAuthenticated, logout } = useAuth(); // Hole den Auth-Status und die Logout-Funktion
 
   // Wähle eine Hintergrundklasse basierend auf dem aktuellen Pfad
   const navbarBackgroundClass = (() => {
@@ -32,7 +34,6 @@ export const Navbar = () => {
         return "bg-gradient-to-r from-purple-600 to-blue-400"; // Datenschutz-Seite
       case "/imprint":
         return "bg-gradient-to-r from-blue-400 to-purple-600"; // Impressum-Seite
-
       default:
         return "bg-black bg-opacity-50"; // Standardfarbe für andere Seiten
     }
@@ -52,37 +53,46 @@ export const Navbar = () => {
           <Link href="/" className="flex items-center mx-2 hover:text-gray-300">
             <CiHome className="mr-1 text-gray-200 hover:text-gray-300" /> Home
           </Link>
-          <Link
-            href="/dashboard"
-            className="flex items-center mx-2 hover:text-gray-300"
-          >
-            <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
-            Dashboard
-          </Link>
+          {isAuthenticated && (
+            <Link
+              href="/dashboard"
+              className="flex items-center mx-2 hover:text-gray-300"
+            >
+              <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+              Dashboard
+            </Link>
+          )}
         </div>
 
         {/* Navigation links on the left side */}
         <div className="hidden md:flex">
-          <Link
-            href="/login"
-            className="flex items-center mx-2 hover:text-gray-300"
-          >
-            <CiLogin className="mr-1 text-gray-200 hover:text-gray-300" /> Login
-          </Link>
-          <Link
-            href="/register"
-            className="flex items-center mx-2 hover:text-gray-300"
-          >
-            <AiOutlineUserAdd className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
-            Register
-          </Link>
-          <Link
-            href="/logout"
-            className="flex items-center mx-2 hover:text-gray-300"
-          >
-            <CiLogout className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
-            Logout
-          </Link>
+          {!isAuthenticated ? (
+            <>
+              <Link
+                href="/login"
+                className="flex items-center mx-2 hover:text-gray-300"
+              >
+                <CiLogin className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center mx-2 hover:text-gray-300"
+              >
+                <AiOutlineUserAdd className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+                Register
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/logout"
+              onClick={() => logout()}
+              className="flex items-center mx-2 hover:text-gray-300"
+            >
+              <CiLogout className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+              Logout
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -135,37 +145,48 @@ export const Navbar = () => {
           >
             <CiHome className="mr-1 text-gray-200 hover:text-gray-300" /> Home
           </Link>
-          <Link
-            href="/dashboard"
-            className="flex items-center mx-2 hover:text-gray-300"
-            onClick={() => setIsOpen(false)}
-          >
-            <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />
-            Dashboard
-          </Link>
-          <Link
-            href="/login"
-            className="flex items-center mx-2 hover:text-gray-300"
-            onClick={() => setIsOpen(false)}
-          >
-            <CiLogin className="mr-1 text-gray-200 hover:text-gray-300" /> Login
-          </Link>
-          <Link
-            href="/register"
-            className="flex items-center mx-2 hover:text-gray-300"
-            onClick={() => setIsOpen(false)}
-          >
-            <AiOutlineUserAdd className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
-            Register
-          </Link>
-          <Link
-            href="/logout"
-            className="flex items-center mx-2 hover:text-gray-300"
-            onClick={() => setIsOpen(false)}
-          >
-            <CiLogout className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
-            Logout
-          </Link>
+          {isAuthenticated && (
+            <Link
+              href="/dashboard"
+              className="flex items-center mx-2 hover:text-gray-300"
+              onClick={() => setIsOpen(false)}
+            >
+              <CiSettings className="mr-1 text-gray-200 hover:text-gray-300" />
+              Dashboard
+            </Link>
+          )}
+          {!isAuthenticated ? (
+            <>
+              <Link
+                href="/login"
+                className="flex items-center mx-2 hover:text-gray-300"
+                onClick={() => setIsOpen(false)}
+              >
+                <CiLogin className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="flex items-center mx-2 hover:text-gray-300"
+                onClick={() => setIsOpen(false)}
+              >
+                <AiOutlineUserAdd className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+                Register
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/logout"
+              onClick={() => {
+                logout();
+                setIsOpen(false);
+              }}
+              className="flex items-center mx-2 hover:text-gray-300"
+            >
+              <CiLogout className="mr-1 text-gray-200 hover:text-gray-300" />{" "}
+              Logout
+            </Link>
+          )}
         </div>
       )}
     </nav>

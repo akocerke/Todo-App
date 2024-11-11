@@ -1,6 +1,12 @@
-// pages/api/hello.js
+// src/api/api.js
+import axios from 'axios';
 
-export default function handler(req, res) {
-    res.status(200).json({ message: 'Hello World' });
-  }
-  
+const api = axios.create({
+  baseURL:
+    'http://localhost:5050/todo-api/', // Basis-URL für alle Anfragen
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+export default api;
