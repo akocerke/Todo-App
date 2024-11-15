@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { AuthProvider } from "@/context/AuthContext"; // Hier den AuthProvider importieren
+import ToastContainerComponent from "./components/ToastContainerComponent";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider> {/* AuthProvider hier einfügen */}
           <Navbar />
+          <ToastContainerComponent/>
           <main>{children}</main>
           <Footer />
         </AuthProvider>

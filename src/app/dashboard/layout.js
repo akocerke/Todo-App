@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Link from "next/link";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DashboardLayout({ children }) {
   useEffect(() => {

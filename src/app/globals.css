@@ -22,3 +22,10 @@ nav {
   background-color: rgba(0, 0, 0, 0.5); /* Optional: BG with opacity */
 }
 
+.toast-position {
+  top: 25% !important;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
