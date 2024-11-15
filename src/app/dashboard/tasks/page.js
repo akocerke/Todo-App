@@ -17,13 +17,12 @@ import {
   deleteTodo,
   updateTodoStatus,
 } from "../../api/todos";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Wichtige CSS für Toaster
+import { toast } from "react-toastify"; 
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState([]); // Anfangszustand als leer
-  const [filterDate, setFilterDate] = useState(""); // Filter für das Fälligkeitsdatum
-  const [filterImportant, setFilterImportant] = useState(false); // Zustand für den wichtigen Aufgabenfilter
+  const [tasks, setTasks] = useState([]);
+  const [filterDate, setFilterDate] = useState("");
+  const [filterImportant, setFilterImportant] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -34,32 +33,34 @@ export default function TasksPage() {
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
-    loadTasks(); // Lade Aufgaben bei Initialisierung
+    loadTasks();
   }, []);
 
-  
-  // Funktion zum Laden der Aufgaben
   const loadTasks = async () => {
     try {
-      const fetchedTasks = await getAllTodos(); // Hole alle To-Dos
+      const fetchedTasks = await getAllTodos();
       setTasks(fetchedTasks);
     } catch (error) {
       console.error("Fehler beim Laden der Aufgaben:", error);
-      toast.error("Fehler beim Laden der Aufgaben."); // Fehler-Toast
+      toast.error("Fehler beim Laden der Aufgaben.");
     }
+  };
+
+  const formatDateForInput = (date) => {
+    return date ? date.split("T")[0] : "";  // Nur das Datum im Format 'yyyy-MM-dd'
   };
 
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
+    const formattedDate = formatDateForInput(newTask.due_date);
+    const taskToSubmit = { ...newTask, due_date: formattedDate };
+  
     if (editingTask) {
       try {
-        // To-Do aktualisieren
-        const updatedTask = await updateTodo(editingTask.id, newTask);
-        setTasks(
-          tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-        );
-        toast.success("Aufgabe erfolgreich aktualisiert!"); // Erfolgs-Toast
-        scrollToToaster();
+        const updatedTask = await updateTodo(editingTask.id, taskToSubmit);
+        // Anstatt das Update manuell zu machen, ruf die Aufgaben neu ab
+        loadTasks();
+        toast.success("Aufgabe erfolgreich aktualisiert!");
       } catch (error) {
         console.error("Fehler beim Aktualisieren des To-Dos:", error);
         toast.error("Fehler beim Aktualisieren der Aufgabe.");
@@ -67,15 +68,16 @@ export default function TasksPage() {
       setEditingTask(null);
     } else {
       try {
-        // Neues To-Do erstellen
-        const createdTask = await createTodo(newTask);
-        setTasks([...tasks, createdTask]);
-        toast.success("Neue Aufgabe erfolgreich hinzugefügt!"); // Erfolgs-Toast
+        const createdTask = await createTodo(taskToSubmit);
+        // Auch hier ruf einfach die Aufgaben neu ab
+        loadTasks();
+        toast.success("Neue Aufgabe erfolgreich hinzugefügt!");
       } catch (error) {
         console.error("Fehler beim Erstellen des To-Dos:", error);
         toast.error("Fehler beim Erstellen der Aufgabe.");
       }
     }
+  
     setNewTask({
       title: "",
       description: "",
@@ -83,17 +85,17 @@ export default function TasksPage() {
       is_important: false,
     });
   };
+  
 
   const handleEditTask = (task) => {
     setNewTask({
       title: task.title,
       description: task.description,
-      due_date: task.due_date,
+      due_date: formatDateForInput(task.due_date), // Formatieren für das Eingabefeld
       is_important: task.is_important,
     });
     setEditingTask(task);
 
-    // Scrollen zum Formular
     const element = document.getElementById("newtask");
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -102,9 +104,9 @@ export default function TasksPage() {
 
   const handleDeleteTask = async (id) => {
     try {
-      await deleteTodo(id); // Lösche das To-Do über die API
-      setTasks(tasks.filter((task) => task.id !== id));
-      toast.success("Aufgabe erfolgreich gelöscht!"); // Erfolgs-Toast
+      await deleteTodo(id);
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      toast.success("Aufgabe erfolgreich gelöscht!");
     } catch (error) {
       console.error("Fehler beim Löschen des To-Dos:", error);
       toast.error("Fehler beim Löschen der Aufgabe.");
@@ -113,29 +115,24 @@ export default function TasksPage() {
 
   const handleStatusChange = async (taskId, status) => {
     try {
-      const updatedTask = await updateTodoStatus(taskId, status); // Status des To-Dos aktualisieren
-      setTasks(
-        tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      const updatedTask = await updateTodoStatus(taskId, status);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       );
-      if (status === "abgeschlossen") {
-        toast.success("Aufgabe als erledigt markiert!"); // Erfolgs-Toast
-      } else if (status === "in Bearbeitung") {
-        toast.info("Aufgabe in Bearbeitung."); // Info-Toast
-      }
+      const statusMessage = status === "abgeschlossen" ? "Aufgabe als erledigt markiert!" : "Aufgabe in Bearbeitung.";
+      toast[status === "abgeschlossen" ? "success" : "info"](statusMessage);
     } catch (error) {
       console.error("Fehler beim Aktualisieren des To-Do-Status:", error);
       toast.error("Fehler beim Aktualisieren des Status.");
     }
   };
 
-  // Filter tasks by due date and importance
   const filteredTasks = tasks.filter((task) => {
     if (filterDate && task.due_date !== filterDate) return false;
     if (filterImportant && !task.is_important) return false;
     return true;
   });
 
-  // Group filtered tasks by status
   const tasksByStatus = {
     offen: filteredTasks.filter((task) => task.status === "offen"),
     inBearbeitung: filteredTasks.filter(
@@ -150,7 +147,6 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Title Section */}
       <div className="text-center mb-6" data-aos="fade-up">
         <h2 className="text-3xl font-semibold text-slate-500 mb-4 uppercase">
           Aufgaben
@@ -160,7 +156,6 @@ export default function TasksPage() {
         </p>
       </div>
 
-      {/* New Task Form */}
       <div
         className="bg-white rounded-lg shadow p-6"
         data-aos="fade-up"
@@ -244,7 +239,6 @@ export default function TasksPage() {
         </form>
       </div>
 
-      {/* Filter Section */}
       <div
         className="mb-6 mt-6 bg-white rounded-lg shadow p-6"
         data-aos="fade-up"
@@ -260,7 +254,6 @@ export default function TasksPage() {
           onChange={(e) => setFilterDate(e.target.value)}
         />
 
-        {/* Filter für wichtige Aufgaben */}
         <div className="mt-4 flex items-center">
           <label htmlFor="filterImportant" className="mr-2 text-gray-700">
             Nur wichtige Aufgaben:
@@ -275,7 +268,6 @@ export default function TasksPage() {
         </div>
       </div>
 
-      {/* Aufgaben anzeigen */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.keys(tasksByStatus).map((status) => (
           <div
@@ -283,7 +275,6 @@ export default function TasksPage() {
             className="bg-white rounded-lg shadow p-4"
             data-aos="fade-up"
           >
-            {/* Status Label anzeigen */}
             <h4 className="font-semibold text-slate-500 mb-4">
               {status === "offen"
                 ? "Offene Aufgaben"
@@ -300,11 +291,16 @@ export default function TasksPage() {
                   <div>
                     <p className="font-semibold text-slate-500">{task.title}</p>
                     <p className="text-sm text-gray-500">{task.description}</p>
-                    <p className="text-xs text-gray-400">{task.due_date}</p>
+                    <p className="text-xs text-gray-400">{new Date(task.due_date).toLocaleString('de-DE', {
+                    day: '2-digit',
+                    month: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}{" "}</p>
                   </div>
                   <div className="flex flex-col items-center space-y-2">
                     <div className="flex items-center space-x-2">
-                      
                       <button
                         className="text-green-500"
                         onClick={() =>

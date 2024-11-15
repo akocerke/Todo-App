@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    // Aktiviert die Erstellung von Source Maps auch im Produktionsmodus
+    productionBrowserSourceMaps: true,
+  };
+  
+  export default nextConfig;
+  
