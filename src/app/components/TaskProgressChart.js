@@ -6,7 +6,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'; // Importiere das datal
 export default function TaskProgressChart() {
   const chartRef = useRef(null);
   const chartInstance = useRef(null); // Referenz für das Chart-Objekt
-  const [progressData, setProgressData] = useState({ completed: 0, open: 0 }); // Zustand für die Fortschrittsdaten
+  const [progressData, setProgressData] = useState({ completed: 0, open: 0, inProgress: 0 }); // Zustand für die Fortschrittsdaten
   const [noTodosMessage, setNoTodosMessage] = useState(""); // Zustand für die Nachricht, wenn keine To-Dos vorhanden sind
   const [loading, setLoading] = useState(true); // Zustand für den Ladezustand
 
@@ -19,16 +19,18 @@ export default function TaskProgressChart() {
         // Überprüfen, ob keine To-Dos vorhanden sind
         if (!todos || todos.length === 0) {
           setNoTodosMessage("Keine To-Dos vorhanden."); // Zeige eine Nachricht an
-          setProgressData({ completed: 0, open: 0 });
+          setProgressData({ completed: 0, open: 0, inProgress: 0 });
         } else {
-          // Berechne die Anzahl der erledigten und offenen Aufgaben
+          // Berechne die Anzahl der erledigten, offenen und in Bearbeitung Aufgaben
           const completed = todos.filter(todo => todo.status === "abgeschlossen").length;
           const open = todos.filter(todo => todo.status === "offen").length;
+          const inProgress = todos.filter(todo => todo.status === "in Bearbeitung").length;
 
           // Setze die Fortschrittsdaten
           setProgressData({
             completed,  // Anzahl der erledigten Aufgaben
             open,       // Anzahl der offenen Aufgaben
+            inProgress, // Anzahl der in Bearbeitung befindlichen Aufgaben
           });
           setNoTodosMessage(""); // Keine Nachricht, wenn To-Dos vorhanden sind
         }
@@ -57,12 +59,12 @@ export default function TaskProgressChart() {
     chartInstance.current = new Chart(ctx, {
       type: "doughnut", // Diagrammtyp
       data: {
-        labels: ["Erledigte Aufgaben", "Offene Aufgaben"], // Beispiel-Kategorien
+        labels: ["Erledigte Aufgaben", "Offene Aufgaben", "In Bearbeitung"], // Neue Label für in Bearbeitung
         datasets: [
           {
             label: "Aufgaben-Fortschritt",
-            data: [progressData.completed, progressData.open], // Dynamische Daten
-            backgroundColor: ["#13fa02", "#f0f2f0"], // Farben für die Sektoren
+            data: [progressData.completed, progressData.open, progressData.inProgress], // Neue Daten für in Bearbeitung
+            backgroundColor: ["#13fa02", "#f0f2f0", "#ffcc00"], // Hinzufügen einer Farbe für "In Bearbeitung"
             borderColor: "rgba(255, 255, 255, 0.5)",
             borderWidth: 2,
           },
