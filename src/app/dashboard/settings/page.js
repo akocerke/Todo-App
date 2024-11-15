@@ -4,67 +4,110 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { FaUserEdit } from "react-icons/fa";
 import { MdOutlineMailLock } from "react-icons/md";
-import { RiLockPasswordLine } from "react-icons/ri";
+import { RiLockPasswordLine, RiEyeFill, RiEyeOffFill } from "react-icons/ri"; // Eye Icons von react-icons
+import { toast } from "react-toastify";
+import { getUserProfile, updateUsername, updateEmail, updatePassword } from "../../api/user"; 
 
 export default function SettingsPage() {
   // Benutzerdaten
-  const [userData, setUserData] = useState({
-    username: "Max Mustermann",
-    email: "max@example.com",
-  });
+  const [userData, setUserData] = useState(null);
 
   // Passwortänderung
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-  // Beispiel für das alte Passwort (in einer realen App würde dies von der Authentifizierung abhängen)
-  const [currentPassword, setCurrentPassword] = useState("123456");
+  // States für die Passwortsichtbarkeit
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
+    // Benutzerprofil beim Laden der Seite abrufen
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        setUserData(profile); // Benutzerdaten laden
+      } catch (error) {
+        console.error("Fehler beim Abrufen des Benutzerprofils:", error);
+        toast.error("Fehler beim Abrufen des Benutzerprofils.");
+      }
+    };
+    fetchUserProfile();
   }, []);
 
   // Funktion zum Bearbeiten des Benutzernamens
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = async (e) => {
     e.preventDefault();
-    // Hier könnte ein API-Aufruf zum Speichern des Benutzernamens erfolgen
-    console.log("Benutzername geändert:", userData.username);
+    try {
+      await updateUsername(userData.username);
+      toast.success("Benutzername wurde erfolgreich geändert.");
+      
+      // Nach erfolgreicher Änderung den neuesten Benutzername abrufen
+      const updatedProfile = await getUserProfile();
+      setUserData(updatedProfile); // Benutzername aktualisieren
+    } catch (error) {
+      console.error("Fehler beim Ändern des Benutzernamens:", error);
+      toast.error("Fehler beim Ändern des Benutzernamens.");
+    }
   };
 
   // Funktion zum Bearbeiten der E-Mail
-  const handleEmailChange = (e) => {
+  const handleEmailChange = async (e) => {
     e.preventDefault();
-    // Hier könnte ein API-Aufruf zum Speichern der E-Mail-Adresse erfolgen
-    console.log("E-Mail geändert:", userData.email);
+    try {
+      await updateEmail(userData.email);
+      toast.success("E-Mail-Adresse wurde erfolgreich geändert.");
+
+      // Nach erfolgreicher Änderung die neuesten E-Mail-Daten abrufen
+      const updatedProfile = await getUserProfile();
+      setUserData(updatedProfile); // E-Mail aktualisieren
+    } catch (error) {
+      console.error("Fehler beim Ändern der E-Mail:", error);
+      toast.error("Fehler beim Ändern der E-Mail.");
+    }
   };
 
   // Funktion zum Ändern des Passworts
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
-
-    // Überprüfen, ob das alte Passwort korrekt ist
-    if (oldPassword !== currentPassword) {
-      alert("Das alte Passwort ist falsch.");
-      return;
-    }
 
     // Überprüfen, ob das neue Passwort und die Bestätigung übereinstimmen
     if (newPassword !== confirmNewPassword) {
-      alert("Die neuen Passwörter stimmen nicht überein.");
+      toast.error("Die neuen Passwörter stimmen nicht überein.");
       return;
     }
 
     // Überprüfen, ob das neue Passwort nicht leer ist
     if (newPassword.trim() === "") {
-      alert("Das neue Passwort darf nicht leer sein.");
+      toast.error("Das neue Passwort darf nicht leer sein.");
       return;
     }
 
-    // Wenn alle Prüfungen bestanden sind, wird das Passwort geändert
-    setCurrentPassword(newPassword); // In einer echten App würde hier ein API-Aufruf stattfinden
-    alert("Passwort wurde erfolgreich geändert.");
+    try {
+      // API-Aufruf zum Ändern des Passworts
+      await updatePassword(oldPassword, newPassword, confirmNewPassword);
+      toast.success("Passwort wurde erfolgreich geändert.");
+    } catch (error) {
+      console.error("Fehler beim Ändern des Passworts:", error);
+      toast.error("Fehler beim Ändern des Passworts.");
+    }
   };
+
+  // Wenn Benutzerdaten noch nicht geladen wurden, einen Ladezustand anzeigen
+  if (!userData) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6 rounded-lg">
+        <div className="text-center">
+          <h2 className="text-3xl font-semibold text-slate-500 mb-4 uppercase">
+            Einstellungen
+          </h2>
+          <p className="text-gray-600">Lade Benutzerdaten...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 rounded-lg">
@@ -140,51 +183,82 @@ export default function SettingsPage() {
           Passwort ändern
         </h3>
         <form onSubmit={handlePasswordChange}>
-          <div className="mb-4">
+          {/* Altes Passwort */}
+          <div className="mb-4 relative">
             <label htmlFor="oldPassword" className="block text-gray-700 mb-2">
               Altes Passwort
             </label>
-            <input
-              id="oldPassword"
-              type="password"
-              className="w-full px-4 py-2 border rounded-md text-gray-500"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              required
-              placeholder="Altes Passwort"
-            />
+            <div className="relative">
+              <input
+                id="oldPassword"
+                type={showOldPassword ? "text" : "password"} // Zeige das Passwort, wenn der State true ist
+                className="w-full px-4 py-2 border rounded-md text-gray-500 pr-10" // Extra Platz für das Icon rechts
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+                placeholder="Altes Passwort"
+              />
+              <button
+                type="button"
+                onClick={() => setShowOldPassword(!showOldPassword)} // Toggle Passwortsichtbarkeit
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                {showOldPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+              </button>
+            </div>
           </div>
-          <div className="mb-4">
+
+          {/* Neues Passwort */}
+          <div className="mb-4 relative">
             <label htmlFor="newPassword" className="block text-gray-700 mb-2">
               Neues Passwort
             </label>
-            <input
-              id="newPassword"
-              type="password"
-              className="w-full px-4 py-2 border rounded-md text-gray-500"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              placeholder="Neues Passwort"
-            />
+            <div className="relative">
+              <input
+                id="newPassword"
+                type={showNewPassword ? "text" : "password"} // Zeige das Passwort, wenn der State true ist
+                className="w-full px-4 py-2 border rounded-md text-gray-500 pr-10" // Extra Platz für das Icon rechts
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                minLength={8}
+                placeholder="Neues Passwort"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)} // Toggle Passwortsichtbarkeit
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                {showNewPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+              </button>
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="confirmNewPassword"
-              className="block text-gray-700 mb-2"
-            >
+
+          {/* Neues Passwort bestätigen */}
+          <div className="mb-4 relative">
+            <label htmlFor="confirmNewPassword" className="block text-gray-700 mb-2">
               Neues Passwort bestätigen
             </label>
-            <input
-              id="confirmNewPassword"
-              type="password"
-              className="w-full px-4 py-2 border rounded-md text-gray-500"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              required
-              placeholder="Neues Passwort bestätigen"
-            />
+            <div className="relative">
+              <input
+                id="confirmNewPassword"
+                type={showConfirmPassword ? "text" : "password"} // Zeige das Passwort, wenn der State true ist
+                className="w-full px-4 py-2 border rounded-md text-gray-500 pr-10" // Extra Platz für das Icon rechts
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                required
+                placeholder="Neues Passwort bestätigen"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle Passwortsichtbarkeit
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                {showConfirmPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+              </button>
+            </div>
           </div>
+
           <button
             type="submit"
             className="w-full bg-purple-700 text-white hover:bg-purple-800 font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
