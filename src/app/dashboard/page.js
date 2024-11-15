@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { FaStar } from "react-icons/fa";
+import { MdOutlineNotificationsActive } from "react-icons/md";
+import { TbProgressCheck, TbProgressBolt  } from "react-icons/tb";
 import TaskProgressChart from "../components/TaskProgressChart";
-import { getAllTodos, getImportantTodos } from "../api/todos"; // Deine API-Funktionen importieren
+import { getAllTodos, getImportantTodos } from "../api/todos";
 
 export default function DashboardPage() {
   const [todos, setTodos] = useState([]);
@@ -66,13 +69,13 @@ export default function DashboardPage() {
       {/* Statistiken Abschnitt */}
       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up">
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-xl font-semibold text-slate-500 mb-2">Aktive Aufgaben</h3>
-          <p className="text-gray-600">{activeTasksCount}</p> {/* Dynamischer Wert */}
+          <h3 className="text-xl font-semibold text-slate-500 mb-2 flex items-center"><MdOutlineNotificationsActive size={24} className="mr-2"/><span>Aktive Aufgaben</span></h3>
+          <p className="text-gray-600 pl-2">{activeTasksCount}</p> {/* Dynamischer Wert */}
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
-    <h3 className="text-xl font-semibold text-slate-500 mb-2">Fortschritt</h3>
-    <p className="text-gray-600 mb-2">{progress}%</p> {/* Dynamischer Fortschrittswert */}
+    <h3 className="text-xl font-semibold text-slate-500 mb-2 flex items-center"><TbProgressBolt size={24} className="mr-2"/><span>Fortschritt</span></h3>
+    <p className="text-gray-600 mb-2 mt-2 pl-2">{progress}%</p> {/* Dynamischer Fortschrittswert */}
     <div className="relative pt-1">
       <div className="w-full bg-gray-200 rounded-full h-2">
         <div
@@ -87,7 +90,7 @@ export default function DashboardPage() {
       {/* Widgets Abschnitt */}
       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up">
         <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center space-y-4">
-          <h3 className="text-xl font-semibold text-slate-500 mb-2">Aufgabe hinzufügen</h3>
+          <h3 className="text-xl font-semibold text-slate-500 mb-2 flex items-center"><IoIosAddCircleOutline size={24} className="mr-2"/><span>Neue Aufgabe</span></h3>
           <a
             href="/dashboard/tasks/#newtask"
             className="bg-purple-700 text-white hover:bg-purple-800 font-bold py-3 px-4 rounded shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
@@ -100,7 +103,8 @@ export default function DashboardPage() {
 
       {/* Diagramme Abschnitt */}
       <div className="mt-10 bg-white rounded-lg shadow p-6" data-aos="fade-up">
-        <h3 className="text-xl font-semibold text-slate-500 mb-2">Aufgaben-Fortschritt</h3>
+        <div><h3 className="text-xl font-semibold text-slate-500 mb-2 flex items-center"><TbProgressCheck size={24} className="mr-2"/> <span>Aufgaben-Fortschritt</span></h3></div>
+        
         <div className="h-64 bg-white rounded-lg flex items-center justify-center">
           <TaskProgressChart />
         </div>
@@ -108,7 +112,7 @@ export default function DashboardPage() {
 
       {/* To-Do-Liste Abschnitt */}
       <div className="mt-10 bg-white rounded-lg shadow p-6" data-aos="fade-up">
-        <h3 className="text-xl font-semibold text-slate-500 mb-2">Wichtige Aufgaben</h3>
+        <h3 className="text-xl font-semibold text-slate-500 mb-2 flex items-center"><FaStar size={24} className="mr-2"/> <span>Wichtige Aufgaben</span></h3>
         <ul className="space-y-2">
           {importantTodos.length > 0 ? (
             importantTodos.map(todo => (

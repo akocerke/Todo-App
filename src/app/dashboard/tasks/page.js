@@ -14,34 +14,10 @@ import {
   IoIosClose,
 } from "react-icons/io";
 import { TfiReload } from "react-icons/tfi";
+import { getAllTodos, createTodo, updateTodo, deleteTodo, updateTodoStatus } from "../../api/todos"; // API importieren
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Task 1",
-      description: "This is the description for task 1",
-      dueDate: "2024-11-20",
-      status: "offen",
-      isImportant: true, // Neue Eigenschaft für wichtige Aufgaben
-    },
-    {
-      id: 2,
-      title: "Task 2",
-      description: "This is the description for task 2",
-      dueDate: "2024-11-21",
-      status: "in Bearbeitung",
-      isImportant: false,
-    },
-    {
-      id: 3,
-      title: "Task 3",
-      description: "This is the description for task 3",
-      dueDate: "2024-11-22",
-      status: "abgeschlossen",
-      isImportant: true,
-    },
-  ]);
+  const [tasks, setTasks] = useState([]); // Anfangszustand als leer
   const [filterDate, setFilterDate] = useState("");
   const [filterImportant, setFilterImportant] = useState(false); // Zustand für den wichtigen Aufgabenfilter
   const [newTask, setNewTask] = useState({
@@ -55,22 +31,38 @@ export default function TasksPage() {
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
+    loadTasks(); // Lade Aufgaben bei Initialisierung
   }, []);
 
-  const handleTaskSubmit = (e) => {
+  // Funktion zum Laden der Aufgaben
+  const loadTasks = async () => {
+    try {
+      const fetchedTasks = await getAllTodos(); // Hole alle To-Dos
+      setTasks(fetchedTasks);
+    } catch (error) {
+      console.error("Fehler beim Laden der Aufgaben:", error);
+    }
+  };
+
+  const handleTaskSubmit = async (e) => {
     e.preventDefault();
     if (editingTask) {
-      setTasks(
-        tasks.map((task) =>
-          task.id === editingTask.id ? { ...task, ...newTask } : task
-        )
-      );
+      try {
+        // To-Do aktualisieren
+        const updatedTask = await updateTodo(editingTask.id, newTask);
+        setTasks(tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
+      } catch (error) {
+        console.error("Fehler beim Aktualisieren des To-Dos:", error);
+      }
       setEditingTask(null);
     } else {
-      setTasks([
-        ...tasks,
-        { ...newTask, id: tasks.length + 1, status: "offen" },
-      ]);
+      try {
+        // Neues To-Do erstellen
+        const createdTask = await createTodo(newTask);
+        setTasks([...tasks, createdTask]);
+      } catch (error) {
+        console.error("Fehler beim Erstellen des To-Dos:", error);
+      }
     }
     setNewTask({ title: "", description: "", dueDate: "", isImportant: false });
   };
@@ -91,8 +83,22 @@ export default function TasksPage() {
     }
   };
 
-  const handleDeleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const handleDeleteTask = async (id) => {
+    try {
+      await deleteTodo(id); // Lösche das To-Do über die API
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Fehler beim Löschen des To-Dos:", error);
+    }
+  };
+
+  const handleStatusChange = async (taskId, status) => {
+    try {
+      const updatedTask = await updateTodoStatus(taskId, status); // Status des To-Dos aktualisieren
+      setTasks(tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren des To-Do-Status:", error);
+    }
   };
 
   // Filter tasks by due date and importance
@@ -232,138 +238,63 @@ export default function TasksPage() {
             Nur wichtige Aufgaben:
           </label>
           <input
-            type="checkbox"
             id="filterImportant"
+            type="checkbox"
             checked={filterImportant}
-            onChange={(e) => setFilterImportant(e.target.checked)}
-            className="ml-2"
+            onChange={() => setFilterImportant(!filterImportant)}
+            className="mr-2"
           />
         </div>
-
-        {/* Filter zurücksetzen Button */}
-        {filterDate || filterImportant ? (
-          <button
-            onClick={() => {
-              setFilterDate("");
-              setFilterImportant(false);
-            }}
-            className="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded mt-2 flex items-center gap-2"
-          >
-            <TfiReload />
-            <span>Filter zurücksetzen</span>
-          </button>
-        ) : null}
       </div>
 
-      <div data-aos="fade-up">
-        {["offen", "inBearbeitung", "abgeschlossen"].map((status) => (
-          <div key={status} className="mb-6">
-            <h3 className="text-2xl font-semibold text-slate-500 capitalize mb-4">
-              {status === "offen"
-                ? "Offene Aufgaben"
-                : status === "inBearbeitung"
-                ? "In Bearbeitung"
-                : "Abgeschlossene Aufgaben"}
-            </h3>
+      {/* Aufgaben anzeigen */}
+      <div className="flex flex-wrap gap-6">
+        {Object.keys(tasksByStatus).map((status) => (
+          <div
+            key={status}
+            className="flex-1 min-w-[300px] bg-white rounded-lg shadow p-4"
+            data-aos="fade-up"
+          >
+            <h4 className="font-semibold text-slate-500 mb-4">
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </h4>
             <div className="space-y-4">
               {tasksByStatus[status].map((task) => (
-                <div key={task.id} className="bg-white p-4 rounded shadow-md">
-                  <h3 className="text-xl font-semibold text-slate-500">
-                    {task.title}{" "}
-                    {task.isImportant && (
-                      <span className="text-yellow-500">⭐</span>
-                    )}
-                  </h3>
-                  <p className="text-gray-600 mt-2">{task.description}</p>
-                  <p className="text-gray-500 mt-2">{task.dueDate}</p>
-
-                  <p className="mt-3 p-1 text-white rounded text-center flex items-center justify-center gap-2 border-t-2 border-b-2">
-                    {task.status === "offen" && (
-                      <>
-                        <IoIosWarning className="text-yellow-500" />
-                        <span className="text-yellow-500">Offen</span>
-                      </>
-                    )}
-                    {task.status === "in Bearbeitung" && (
-                      <>
-                        <IoIosBuild className="text-blue-500" />
-                        <span className="text-blue-500">In Bearbeitung</span>
-                      </>
-                    )}
-                    {task.status === "abgeschlossen" && (
-                      <>
-                        <IoIosCheckmarkCircle className="text-green-500" />
-                        <span className="text-green-500">Abgeschlossen</span>
-                      </>
-                    )}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <div className="hidden sm:flex justify-between items-center w-full">
+                <div
+                  key={task.id}
+                  className="flex justify-between items-start border-b py-3"
+                >
+                  <div>
+                    <p className="font-semibold text-slate-500">{task.title}</p>
+                    <p className="text-sm text-gray-500">{task.description}</p>
+                    <p className="text-xs text-gray-400">{task.dueDate}</p>
+                  </div>
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => handleEditTask(task)}
-                        className="flex items-center gap-2 text-blue-500 hover:text-blue-700 w-full text-left py-2"
+                        className="text-green-500"
+                        onClick={() => handleStatusChange(task.id, "abgeschlossen")}
                       >
-                        <IoIosCreate size={20} /> Bearbeiten
+                        <IoIosCheckmarkCircle size={24} />
                       </button>
                       <button
+                        className="text-yellow-500"
+                        onClick={() => handleStatusChange(task.id, "in Bearbeitung")}
+                      >
+                        <IoIosBuild size={24} />
+                      </button>
+                      <button
+                        className="text-red-500"
                         onClick={() => handleDeleteTask(task.id)}
-                        className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left py-2"
                       >
-                        <IoIosTrash size={20} /> Löschen
+                        <IoIosTrash size={24} />
                       </button>
                       <button
-                        onClick={() =>
-                          alert(`Details der Aufgabe: ${task.title}`)
-                        }
-                        className="flex items-center gap-2 text-gray-500 hover:text-gray-700 w-full text-left py-2"
+                        className="text-blue-500"
+                        onClick={() => handleEditTask(task)}
                       >
-                        <IoIosEye size={20} /> Details
+                        <IoIosCreate size={24} />
                       </button>
-                    </div>
-
-                    <div className="sm:hidden w-full flex justify-between items-center">
-                      <button
-                        onClick={() =>
-                          setDropdownOpen(
-                            dropdownOpen === task.id ? null : task.id
-                          )
-                        }
-                        className="text-gray-500 hover:text-gray-700 flex items-center gap-2"
-                      >
-                        <IoIosArrowDown size={20} />
-                      </button>
-
-                      {dropdownOpen === task.id && (
-                        <div className="absolute bg-white shadow-md rounded mt-2 p-2 w-40">
-                          <button
-                            onClick={closeDropdown}
-                            className="absolute top-1 right-1 text-gray-500 hover:text-gray-700"
-                          >
-                            <IoIosClose size={20} />
-                          </button>
-                          <button
-                            onClick={() => handleEditTask(task)}
-                            className="flex items-center gap-2 text-blue-500 hover:text-blue-700 w-full text-left py-2"
-                          >
-                            <IoIosCreate size={20} /> Bearbeiten
-                          </button>
-                          <button
-                            onClick={() => handleDeleteTask(task.id)}
-                            className="flex items-center gap-2 text-red-500 hover:text-red-700 w-full text-left py-2"
-                          >
-                            <IoIosTrash size={20} /> Löschen
-                          </button>
-                          <button
-                            onClick={() =>
-                              alert(`Details der Aufgabe: ${task.title}`)
-                            }
-                            className="flex items-center gap-2 text-gray-500 hover:text-gray-700 w-full text-left py-2"
-                          >
-                            <IoIosEye size={20} /> Details
-                          </button>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
