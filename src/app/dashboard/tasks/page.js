@@ -39,12 +39,18 @@ export default function TasksPage() {
   const loadTasks = async () => {
     try {
       const fetchedTasks = await getAllTodos();
-      setTasks(fetchedTasks);
+      
+      if (fetchedTasks.todos.length === 0) {
+        toast.info("Keine To-Dos für diesen Benutzer gefunden."); // Zeige Nachricht an, wenn keine Aufgaben vorhanden sind
+      }
+      
+      setTasks(fetchedTasks.todos); // Setze die Aufgaben, auch wenn es keine gibt
     } catch (error) {
       console.error("Fehler beim Laden der Aufgaben:", error);
-      toast.error("Fehler beim Laden der Aufgaben.");
+      
     }
   };
+  
 
   const formatDateForInput = (date) => {
     return date ? date.split("T")[0] : "";  // Nur das Datum im Format 'yyyy-MM-dd'
